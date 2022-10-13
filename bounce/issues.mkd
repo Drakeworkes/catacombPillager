@@ -1,0 +1,16 @@
+## Resolved Issues ##
+
+- **[1]** Use bounce code as framework
+
+
+
+## Open Issues ##
+- **[2]** Create level system
+
+
+
+
+
+
+
+

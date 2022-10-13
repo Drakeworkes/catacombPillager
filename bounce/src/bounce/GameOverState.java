@@ -53,8 +53,8 @@ class GameOverState extends BasicGameState {
 					   Graphics g) throws SlickException {
 
 		Game bg = (Game)game;
-		g.drawImage(ResourceManager.getImage(Game.GAMEOVER_BG_RSC),
-				0, 0);
+		//g.drawImage(ResourceManager.getImage(Game.GAMEOVER_BG_RSC),
+		//		0, 0);
 		g.drawString("Points: " + lastKnownPoints, 10, 30);
 
 		if(splashState){
@@ -74,8 +74,8 @@ class GameOverState extends BasicGameState {
 		}
 
 
-		g.drawImage(ResourceManager.getImage(Game.GAMEOVER_TEXT_RSC),
-				splashX, splashY);
+		//g.drawImage(ResourceManager.getImage(Game.GAMEOVER_TEXT_RSC),
+		//		splashX, splashY);
 
 	}
 

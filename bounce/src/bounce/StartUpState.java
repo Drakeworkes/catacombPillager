@@ -1,7 +1,7 @@
 package bounce;
 
 import java.util.Iterator;
-
+import jig.Entity;
 import jig.ResourceManager;
 
 import org.newdawn.slick.GameContainer;
@@ -23,7 +23,8 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 class StartUpState extends BasicGameState {
 
-	//int splashY;
+	boolean loadLevel;
+	Entity[][][] level;
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -31,7 +32,8 @@ class StartUpState extends BasicGameState {
 
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) {
-		//splashY = 200;
+		loadLevel = true;
+		levelLoader.loadLevels();//Load the levels
 		container.setSoundOn(false);
 	}
 
@@ -40,6 +42,25 @@ class StartUpState extends BasicGameState {
 	public void render(GameContainer container, StateBasedGame game,
 					   Graphics g) throws SlickException {
 		Game bg = (Game)game;
+
+
+		if(loadLevel) {
+			loadLevel = false;
+			level = levelLoader.getLevel(0);
+			System.out.println("Level loaded");
+		}
+
+		if(level != null) {
+			for (Entity[][] x : level) {//Iterate through x axis
+				for (Entity[] y : x) {//Iterate through y axis
+					for (Entity E : y) {
+						if(E!= null) {
+							E.render(g);//Go through and render everything
+						}
+					}
+				}
+			}
+		}
 
 		//Check if we need to animate
 		//check for collisions once we are done animating

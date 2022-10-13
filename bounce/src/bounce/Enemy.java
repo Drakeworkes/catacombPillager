@@ -11,6 +11,7 @@ class Enemy extends Entity {
 
 
     public Enemy(final int x, final int y, final int EnemyType) {
+        super(x, y);
         this.x = x;
         this.y = y;
         this.type = EnemyType;
@@ -19,7 +20,7 @@ class Enemy extends Entity {
         //Set tile art
         if(type==0) {
             addImageWithBoundingBox(ResourceManager
-                    .getImage(Game.TILE_STANDARD_RSC));
+                    .getImage(Game.ENEMY_STANDARD_RSC));
         }else{
             System.out.println("Invalid type endered, defaulting to type 0");
             type=0;

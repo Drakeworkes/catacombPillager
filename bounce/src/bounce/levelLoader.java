@@ -24,7 +24,7 @@ public class levelLoader {
                 //3 - Exit
             //1 = enemy
                 //subtype: enemy type
-            //4 = Player
+            //2 = Player
                 //subtype: N/A
         //Positions are listed based on x and y locations of tiles, not actual x and y positions
         int[][] template = {
@@ -60,7 +60,7 @@ public class levelLoader {
                 {0, 0, 0, 11}, {0, 0, 1, 11}, {0, 0, 2, 11}, {0, 0, 3, 11},                {1, 0, 5, 11}, {0, 0, 6, 11},                {0, 0, 8, 11}, {0, 0, 9, 11}, {0, 0, 10, 11}, {0, 2, 11, 11},
                 {0, 0, 0, 12}, {0, 0, 1, 12}, {0, 0, 2, 12}, {0, 0, 3, 12},                {0, 0, 5, 12}, {0, 0, 6, 12},                {0, 0, 8, 12}, {0, 0, 9, 12}, {0, 0, 10, 12},                 {0, 0, 12, 12},                 {0, 0, 14, 12},
                 {0, 0, 0, 13}, {0, 0, 1, 13}, {0, 0, 2, 13}, {0, 0, 3, 13},                {0, 0, 5, 13}, {0, 0, 6, 13},                {0, 0, 8, 13}, {0, 0, 9, 13}, {0, 0, 10, 13}, {0, 3, 11, 13},                 {0, 1, 13, 13}, {0, 0, 14, 13},
-                {0, 0, 0, 14}, {0, 0, 1, 14}, {0, 0, 2, 14}, {0, 0, 3, 14},                                              {4, 0, 7, 14}, {0, 0, 8, 14}, {0, 0, 9, 14}, {0, 0, 10, 14}, {0, 0, 11, 14}, {0, 0, 12, 14}, {0, 0, 13, 14}, {0, 0, 14, 14}
+                {0, 0, 0, 14}, {0, 0, 1, 14}, {0, 0, 2, 14}, {0, 0, 3, 14},                                              {2, 0, 7, 14}, {0, 0, 8, 14}, {0, 0, 9, 14}, {0, 0, 10, 14}, {0, 0, 11, 14}, {0, 0, 12, 14}, {0, 0, 13, 14}, {0, 0, 14, 14}
         };
 
         levelData.add(testLevel);
@@ -68,8 +68,8 @@ public class levelLoader {
         return 0;
     }
 
-    public static Tile[][][] getLevel(int levelNum) {
-        Tile[][][] level = new Tile[levelSize][levelSize][3];
+    public static Entity[][][] getLevel(int levelNum) {
+        Entity[][][] level = new Entity[levelSize][levelSize][3];
         //levelData[x][y] = Array length 3
         //0: Tile
         //1: Item
@@ -89,17 +89,14 @@ public class levelLoader {
                 //Tiles are placed at level 0
                 level[x][y][0] = new Tile((x*shift)+shift/2, (y*shift)+shift/2, type);
 
-                System.out.println("Inserted new tile("+type+") onto ["+x+"]["+y+"]");
 
             }else if(tileData[0]==1){//Enemy
-                //level[x][y][1] = new Enemy(x, y, type);
+                level[x][y][1] = new Enemy((x*shift)+shift/2, (y*shift)+shift/2, type);
                 //Enemies are placed on level 1
-                System.out.println("Inserted new Enemy("+type+") onto ["+x+"]["+y+"]");
 
             }else if(tileData[0]==2){//Player
-                //level[x][y][2] = new Player(x, y);
+                level[x][y][2] = new Player((x*shift)+shift/2, (y*shift)+shift/2);
                 //Players are placed on level 2
-                System.out.println("Inserted new tile player onto ["+x+"]["+y+"]");
 
             }else{
                 System.out.println("Invalid entity given");

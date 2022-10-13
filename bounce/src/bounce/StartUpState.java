@@ -24,7 +24,7 @@ import org.newdawn.slick.state.StateBasedGame;
 class StartUpState extends BasicGameState {
 
 	boolean loadLevel;
-	Tile[][][] level;
+	Entity[][][] level;
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -51,17 +51,11 @@ class StartUpState extends BasicGameState {
 		}
 
 		if(level != null) {
-			System.out.println("Preparing to render");
-			for (Tile[][] x : level) {//Iterate through x axis
-				System.out.println(" Going through X("+x+" axis...");
-				for (Tile[] y : x) {//Iterate through y axis
-					System.out.println("  Going through Y("+y+" axis...");
-					for (Tile E : y) {
-						System.out.println("   Going through entity("+E+" stack...");
-						System.out.print("    Rendering...");
+			for (Entity[][] x : level) {//Iterate through x axis
+				for (Entity[] y : x) {//Iterate through y axis
+					for (Entity E : y) {
 						if(E!= null) {
 							E.render(g);//Go through and render everything
-							System.out.println("Rendered");
 						}
 					}
 				}

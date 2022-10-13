@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 class Tile extends Entity {
 
-    private Vector velocity;
     public int type;
 
 

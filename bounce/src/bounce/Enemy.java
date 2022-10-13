@@ -5,15 +5,12 @@ import jig.ResourceManager;
 
 
 class Enemy extends Entity {
-    public int x;
-    public int y;
+
     public int type;
 
 
     public Enemy(final int x, final int y, final int EnemyType) {
         super(x, y);
-        this.x = x;
-        this.y = y;
         this.type = EnemyType;
         //0 - Standard tile
 

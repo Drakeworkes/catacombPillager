@@ -6,7 +6,7 @@ public class levelLoader {
 
     static int levelSize = 15;//How many tiles are these
     static int tileSize = 40;//How wide are the tiles
-    static int infoSize = 200;//Honestly I forgot what this was
+    static int infoSize = 200;//How large is our side information panel? (Remove this much room from the X axis)
     //Initialize levelData
 
     static ArrayList<int[][]> levelData = new ArrayList<int[][]>();
@@ -88,10 +88,8 @@ public class levelLoader {
             int y = tileData[3];
             int type = tileData[1];
             int shift = tileSize;
-            if(tileData[0]==2){
-                System.out.println("Player");
-            }
-            level[x][y][tileData[0]]= new Tile((x*shift)+(shift/2+infoSize), (y*shift)+shift/2, type, tileData[0]);
+
+            level[x][y][tileData[0]]= new Tile((x*shift)+(shift/2+infoSize), (y*shift)+shift/2, type, tileData[0], x, y);
 
         }
 

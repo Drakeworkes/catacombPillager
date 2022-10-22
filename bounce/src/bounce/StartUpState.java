@@ -34,7 +34,7 @@ class StartUpState extends BasicGameState {
 
 
 
-	Entity[][][] level;
+	Tile[][][] level;
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -69,9 +69,9 @@ class StartUpState extends BasicGameState {
 
 		//Render our scene
 		if(level != null) {
-			for (Entity[][] x : level) {//Iterate through x axis
-				for (Entity[] y : x) {//Iterate through y axis
-					for (Entity E : y) {
+			for (Tile[][] x : level) {//Iterate through x axis
+				for (Tile[] y : x) {//Iterate through y axis
+					for (Tile E : y) {
 						if (E != null) {
 							E.render(g);//Go through and render everything
 						}
@@ -82,6 +82,7 @@ class StartUpState extends BasicGameState {
 
 
 		if (input.isKeyDown(Input.KEY_W)) {//Check if we want to move up
+			Tile.getPlayerLoc(level);
 			//Calculate desiredX and desiredY of player
 			//set renderlevel to true
 		}else if (input.isKeyDown(Input.KEY_A)) {//Check if we want to move left

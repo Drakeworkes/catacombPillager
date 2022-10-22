@@ -23,7 +23,17 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 class StartUpState extends BasicGameState {
 
+	//Trigger a new level load
 	boolean loadLevel;
+
+	//Trigger a map render
+	boolean renderlevel;
+
+	//Keep track of animation frames
+	int renderState = 0;
+
+
+
 	Entity[][][] level;
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
@@ -41,25 +51,48 @@ class StartUpState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game,
 					   Graphics g) throws SlickException {
+
+		Input input = container.getInput();
 		Game bg = (Game)game;
 
-
+		//Load the level data in
 		if(loadLevel) {
 			loadLevel = false;
 			level = levelLoader.getLevel(0);
 			System.out.println("Level loaded");
+			renderlevel = true;
 		}
 
+		if(renderlevel){
+
+		}
+
+		//Render our scene
 		if(level != null) {
 			for (Entity[][] x : level) {//Iterate through x axis
 				for (Entity[] y : x) {//Iterate through y axis
 					for (Entity E : y) {
-						if(E!= null) {
+						if (E != null) {
 							E.render(g);//Go through and render everything
 						}
 					}
 				}
 			}
+		}
+
+
+		if (input.isKeyDown(Input.KEY_W)) {//Check if we want to move up
+			//Calculate desiredX and desiredY of player
+			//set renderlevel to true
+		}else if (input.isKeyDown(Input.KEY_A)) {//Check if we want to move left
+			//Calculate desiredX and desiredY of player
+			//set renderlevel to true
+		}else if (input.isKeyDown(Input.KEY_S)) {//check if we want to move right
+			//Calculate desiredX and desiredY of player
+			//set renderlevel to true
+		}else if (input.isKeyDown(Input.KEY_D)) {//Check if we want to move down
+			//Calculate desiredX and desiredY of player
+			//set renderlevel to true
 		}
 
 		//Check if we need to animate

@@ -111,8 +111,7 @@ class Tile extends Entity {
     }
 
     public static void updatePos(Tile[][][] level, int offset) {
-        //this.x = (x*levelLoader.tileSize)+(levelLoader.tileSize/2+levelLoader.infoSize);//Set up X coordinate in pixels
-        //this.y = (y*levelLoader.tileSize)+levelLoader.tileSize/2;
+
         for (Tile[][] x : level) {//Iterate through x axis
             for (Tile[] y : x) {//Iterate through y axis
                 if (y[2] != null) {//Are there entities here?
@@ -131,8 +130,8 @@ class Tile extends Entity {
                     }
                     //Snap to grid locations
                     if (offset == (levelLoader.tileSize+1)) {
-                        y[2].prevTileX = y[2].tileX;
-                        y[2].prevTileY = y[2].tileY;
+                        y[2].prevTileX = y[2].tileX;//Save what tile we were at
+                        y[2].prevTileY = y[2].tileY;//Save what tile we were at
 
                         y[2].tileX = y[2].desiredX;
                         y[2].tileY = y[2].desiredY;
@@ -164,11 +163,11 @@ class Tile extends Entity {
                 }
             }
         }
-        if (direction==0 && ( level[tileX][tileY-1][0]!=null || tileY==0)){//There is a tile above us
+        if (direction==0 && ( (level[tileX][tileY-1][0]!=null && level[tileX][tileY-1][0].type==0) || tileY==0)){//There is a tile above us
             //check if there is a weapon or treasure
             //Check if there is an enemy
             return true;
-        }else if (direction==1 && ( level[tileX-1][tileY][0]!=null || tileX==0)){//Check for a tile to the left of us
+        }else if (direction==1 && ( (level[tileX-1][tileY][0]!=null && level[tileX-1][tileY][0].type==0) || tileX==0)){//Check for a tile to the left of us
             //check if there is a weapon or treasure
             //Check if there is an enemy
             return true;
@@ -178,7 +177,7 @@ class Tile extends Entity {
             if (tileY==levelLoader.levelSize-1){//Check if we are at a border
                 return true;
             }
-            if (level[tileX][tileY+1][0]!=null){//Check if there is a title
+            if (level[tileX][tileY+1][0]!=null && level[tileX][tileY+1][0].type==0){//Check if there is a title
                 return true;
             }
         }else if (direction==3){//Check for a tile to the right of us
@@ -187,7 +186,7 @@ class Tile extends Entity {
             if (tileX==levelLoader.levelSize-1){//Check if we are at a border
                 return true;
             }
-            if (level[tileX+1][tileY][0]!=null) {//Check if there is a tile there
+            if (level[tileX+1][tileY][0]!=null && level[tileX+1][tileY][0].type==0) {//Check if there is a tile there
                 return true;
             }
         }

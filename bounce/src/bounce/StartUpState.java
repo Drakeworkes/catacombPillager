@@ -34,7 +34,7 @@ class StartUpState extends BasicGameState {
 
 
 
-	Entity[][][] level;
+	Tile[][][] level;
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -60,18 +60,24 @@ class StartUpState extends BasicGameState {
 			loadLevel = false;
 			level = levelLoader.getLevel(0);
 			System.out.println("Level loaded");
-			renderlevel = true;
 		}
 
 		if(renderlevel){
+			if(renderState > levelLoader.tileSize){//Have we gotten to the final animation state yet?
+				renderlevel = false;
+				renderState = 0;
+			}else{
 
+				renderState = renderState + 1;
+				Tile.updatePos(level, renderState);
+			}
 		}
 
 		//Render our scene
 		if(level != null) {
-			for (Entity[][] x : level) {//Iterate through x axis
-				for (Entity[] y : x) {//Iterate through y axis
-					for (Entity E : y) {
+			for (Tile[][] x : level) {//Iterate through x axis
+				for (Tile[] y : x) {//Iterate through y axis
+					for (Tile E : y) {
 						if (E != null) {
 							E.render(g);//Go through and render everything
 						}
@@ -80,19 +86,20 @@ class StartUpState extends BasicGameState {
 			}
 		}
 
-
-		if (input.isKeyDown(Input.KEY_W)) {//Check if we want to move up
-			//Calculate desiredX and desiredY of player
-			//set renderlevel to true
-		}else if (input.isKeyDown(Input.KEY_A)) {//Check if we want to move left
-			//Calculate desiredX and desiredY of player
-			//set renderlevel to true
-		}else if (input.isKeyDown(Input.KEY_S)) {//check if we want to move right
-			//Calculate desiredX and desiredY of player
-			//set renderlevel to true
-		}else if (input.isKeyDown(Input.KEY_D)) {//Check if we want to move down
-			//Calculate desiredX and desiredY of player
-			//set renderlevel to true
+		if(!renderlevel) {//We're double-dipping this variable to use as a keypress debounce
+			if (input.isKeyDown(Input.KEY_W)) {//Check if we want to move up
+				Tile.movePlayer(level, 0);
+				renderlevel = true;
+			} else if (input.isKeyDown(Input.KEY_A)) {//Check if we want to move left
+				Tile.movePlayer(level, 1);
+				renderlevel = true;
+			} else if (input.isKeyDown(Input.KEY_S)) {//check if we want to move right
+				Tile.movePlayer(level, 2);
+				renderlevel = true;
+			} else if (input.isKeyDown(Input.KEY_D)) {//Check if we want to move down
+				Tile.movePlayer(level, 3);
+				renderlevel = true;
+			}
 		}
 
 		//Check if we need to animate

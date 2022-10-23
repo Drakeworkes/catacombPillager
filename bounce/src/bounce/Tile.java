@@ -198,16 +198,23 @@ class Tile extends Entity {
         setPosition(x, y);
     }
 
-    public void updateMap(Tile[][][] level){
+    public static Tile[][][] updateMap(Tile[][][] level){
         Tile[][][] updatedLevel = new Tile[levelLoader.levelSize][levelLoader.levelSize][3];
         for (Tile[][] x : level) {//Iterate through x axis
-            for (Tile[] y : x) {//Iterate through y axis
+            for (Tile[] y : x) {//Iterate through y axis\
+                if (y[0] != null) {//Are there entities here?
+                    updatedLevel[y[0].tileX][y[0].tileY][0] = y[0];
+                }
+                if (y[1] != null) {//Are there entities here?
+                    updatedLevel[y[1].tileX][y[1].tileY][1] = y[1];
+                }
                 if (y[2] != null) {//Are there entities here?
                     updatedLevel[y[2].tileX][y[2].tileY][2] = y[2];
                 }
+
             }
         }
-        level = updatedLevel;
+        return updatedLevel;
     }
 
 

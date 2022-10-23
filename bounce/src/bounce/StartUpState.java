@@ -32,6 +32,12 @@ class StartUpState extends BasicGameState {
 	//Keep track of animation frames
 	int renderState = 0;
 
+	//How many points the player has
+	int points;
+
+	//How many weapons the player has
+	int weapons;
+
 
 
 	Tile[][][] level;
@@ -55,6 +61,10 @@ class StartUpState extends BasicGameState {
 		Input input = container.getInput();
 		Game bg = (Game)game;
 
+		//Draw stats
+		g.drawString("Points: " + points, 10, 30);
+		g.drawString("Weapons: " + weapons, 10, 50);
+
 		//Load the level data in
 		if(loadLevel) {
 			loadLevel = false;
@@ -66,6 +76,7 @@ class StartUpState extends BasicGameState {
 			if(renderState > levelLoader.tileSize){//Have we gotten to the final animation state yet?
 				renderlevel = false;
 				renderState = 0;
+				level = Tile.updateMap(level);//Update the map arrays with the new positions of everything
 			}else{
 
 				renderState = renderState + 1;
@@ -91,15 +102,12 @@ class StartUpState extends BasicGameState {
 				Tile.movePlayer(level, 0);
 				renderlevel = true;
 			} else if (input.isKeyDown(Input.KEY_A) && !Tile.checkTileCollision(level, 1)) {//Check if we want to move left
-				//Check for collisions
 				Tile.movePlayer(level, 1);
 				renderlevel = true;
 			} else if (input.isKeyDown(Input.KEY_S) && !Tile.checkTileCollision(level, 2)) {//check if we want to move right
-				//Check for collisions
 				Tile.movePlayer(level, 2);
 				renderlevel = true;
 			} else if (input.isKeyDown(Input.KEY_D) && !Tile.checkTileCollision(level, 3)) {//Check if we want to move down
-				//Check for collisions
 				Tile.movePlayer(level, 3);
 				renderlevel = true;
 			}

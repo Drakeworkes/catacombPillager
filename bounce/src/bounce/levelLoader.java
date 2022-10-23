@@ -7,6 +7,12 @@ public class levelLoader {
     static int levelSize = 15;//How many tiles are these
     static int tileSize = 40;//How wide are the tiles
     static int infoSize = 200;//How large is our side information panel? (Remove this much room from the X axis)
+
+    //Points you get for collecting treasure
+    static int treasurePoints = 100;
+
+    //Points you get for collecting treasure
+    static int weaponPoints = 10;
     //Initialize levelData
 
     static ArrayList<int[][]> levelData = new ArrayList<int[][]>();

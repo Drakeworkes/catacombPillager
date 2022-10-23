@@ -4,6 +4,7 @@ import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.state.StateBasedGame;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -111,8 +112,7 @@ class Tile extends Entity {
     }
 
     public static void updatePos(Tile[][][] level, int offset) {
-        //this.x = (x*levelLoader.tileSize)+(levelLoader.tileSize/2+levelLoader.infoSize);//Set up X coordinate in pixels
-        //this.y = (y*levelLoader.tileSize)+levelLoader.tileSize/2;
+
         for (Tile[][] x : level) {//Iterate through x axis
             for (Tile[] y : x) {//Iterate through y axis
                 if (y[2] != null) {//Are there entities here?
@@ -131,8 +131,8 @@ class Tile extends Entity {
                     }
                     //Snap to grid locations
                     if (offset == (levelLoader.tileSize+1)) {
-                        y[2].prevTileX = y[2].tileX;
-                        y[2].prevTileY = y[2].tileY;
+                        y[2].prevTileX = y[2].tileX;//Save what tile we were at
+                        y[2].prevTileY = y[2].tileY;//Save what tile we were at
 
                         y[2].tileX = y[2].desiredX;
                         y[2].tileY = y[2].desiredY;
@@ -147,7 +147,7 @@ class Tile extends Entity {
     }
 
     //Checks the local tile given a direction. Returns true if there is a collision, and false if not
-    public static boolean checkTileCollision(Tile[][][] level, int direction){
+    public static boolean checkTileCollision(Tile[][][] level, int direction, StateBasedGame game){
         //Direction:
         //W = 0
         //A = 1
@@ -164,31 +164,90 @@ class Tile extends Entity {
                 }
             }
         }
-        if (direction==0 && ( level[tileX][tileY-1][0]!=null || tileY==0)){//There is a tile above us
-            //check if there is a weapon or treasure
-            //Check if there is an enemy
-            return true;
-        }else if (direction==1 && ( level[tileX-1][tileY][0]!=null || tileX==0)){//Check for a tile to the left of us
-            //check if there is a weapon or treasure
-            //Check if there is an enemy
-            return true;
+        if (direction==0){//There is a tile above us
+            if(tileY==0){
+                return true;
+            }
+
+            if(level[tileX][tileY-1][0]!=null) {
+                if (level[tileX][tileY - 1][0].type == 0) {//Wall
+                    return true;
+                }
+
+                if (level[tileX][tileY - 1][0].type == 1) {//Treasure
+                    level[tileX][tileY - 1][0] = null;//Delete the treasure from the map
+                    StartUpState.points = StartUpState.points + levelLoader.treasurePoints;
+                } else if (level[tileX][tileY - 1][0].type == 2) {//Weapon
+                    level[tileX][tileY - 1][0] = null;//Delete the treasure from the map
+                    StartUpState.points = StartUpState.points + levelLoader.weaponPoints;
+                    StartUpState.weapons = StartUpState.weapons + 1;
+                }
+                if (level[tileX][tileY - 1][1] != null) {
+                    if (StartUpState.weapons > 0) {
+                        StartUpState.weapons = StartUpState.weapons - 1;
+                        //Award points based on enemy kill
+                    } else {
+                        //You died
+                        game.enterState(Game.GAMEOVERSTATE);
+                    }
+                }
+            }
+
+        }else if (direction==1){//Check for a tile to the left of us
+            if (tileX==0){
+                return true;
+            }
+
+            if(level[tileX-1][tileY][0]!=null) {
+                if (level[tileX - 1][tileY][0].type == 0) {//Wall
+                    return true;
+                }
+
+                if (level[tileX - 1][tileY][0].type == 1) {//Treasure
+                    level[tileX - 1][tileY][0] = null;//Delete the treasure from the map
+                    StartUpState.points = StartUpState.points + levelLoader.treasurePoints;
+                } else if (level[tileX - 1][tileY][0].type == 2) {//Weapon
+                    level[tileX - 1][tileY][0] = null;//Delete the treasure from the map
+                    StartUpState.points = StartUpState.points + levelLoader.weaponPoints;
+                    StartUpState.weapons = StartUpState.weapons + 1;
+                }
+            }
+
         }else if (direction==2){//Check for a tile below us
-            //check if there is a weapon or treasure
-            //Check if there is an enemy
+
             if (tileY==levelLoader.levelSize-1){//Check if we are at a border
                 return true;
             }
-            if (level[tileX][tileY+1][0]!=null){//Check if there is a title
+            if (level[tileX][tileY+1][0]!=null && level[tileX][tileY+1][0].type==0){//Wall
                 return true;
             }
+            if (level[tileX][tileY+1][0]!= null && level[tileX][tileY+1][0].type == 1) {//Treasure
+                level[tileX][tileY+1][0] = null;//Delete the treasure from the map
+                StartUpState.points = StartUpState.points + levelLoader.treasurePoints;
+                return false;
+            } else if (level[tileX][tileY+1][0]!= null && level[tileX][tileY+1][0].type == 2) {//Weapon
+                level[tileX][tileY+1][0] = null;//Delete the treasure from the map
+                StartUpState.points = StartUpState.points + levelLoader.weaponPoints;
+                StartUpState.weapons = StartUpState.weapons + 1;
+                return false;
+            }
         }else if (direction==3){//Check for a tile to the right of us
-            //check if there is a weapon or treasure
-            //Check if there is an enemy
+
             if (tileX==levelLoader.levelSize-1){//Check if we are at a border
                 return true;
             }
-            if (level[tileX+1][tileY][0]!=null) {//Check if there is a tile there
+            if (level[tileX+1][tileY][0]!=null && level[tileX+1][tileY][0].type==0) {//Wall
                 return true;
+            }
+            if (level[tileX+1][tileY][0]!= null && level[tileX+1][tileY][0].type == 1) {//Treasure
+                level[tileX+1][tileY][0] = null;//Delete the treasure from the map
+                StartUpState.points = StartUpState.points + levelLoader.treasurePoints;
+                return false;
+            } else if (level[tileX+1][tileY][0]!= null && level[tileX+1][tileY][0].type == 2) {//Weapon
+                level[tileX+1][tileY][0] = null;//Delete the treasure from the map
+                StartUpState.points = StartUpState.points + levelLoader.weaponPoints;
+                StartUpState.weapons = StartUpState.weapons + 1;
+                return false;
             }
         }
         return false;

@@ -98,21 +98,20 @@ class StartUpState extends BasicGameState {
 		}
 
 		if(!renderlevel) {//We're double-dipping this variable to use as a keypress debounce
-			if (input.isKeyDown(Input.KEY_W ) && !Tile.checkTileCollision(level, 0)) {//Check if we want to move up
+			if (input.isKeyDown(Input.KEY_W ) && !Tile.checkTileCollision(level, 0, game)) {//Check if we want to move up
 				Tile.movePlayer(level, 0);
 				renderlevel = true;
-			} else if (input.isKeyDown(Input.KEY_A) && !Tile.checkTileCollision(level, 1)) {//Check if we want to move left
+			} else if (input.isKeyDown(Input.KEY_A) && !Tile.checkTileCollision(level, 1, game)) {//Check if we want to move left
 				Tile.movePlayer(level, 1);
 				renderlevel = true;
-			} else if (input.isKeyDown(Input.KEY_S) && !Tile.checkTileCollision(level, 2)) {//check if we want to move right
+			} else if (input.isKeyDown(Input.KEY_S) && !Tile.checkTileCollision(level, 2, game)) {//check if we want to move right
 				Tile.movePlayer(level, 2);
 				renderlevel = true;
-			} else if (input.isKeyDown(Input.KEY_D) && !Tile.checkTileCollision(level, 3)) {//Check if we want to move down
+			} else if (input.isKeyDown(Input.KEY_D) && !Tile.checkTileCollision(level, 3, game)) {//Check if we want to move down
 				Tile.movePlayer(level, 3);
 				renderlevel = true;
 			}
 		}
-
 		//Check if we need to animate
 		//check for collisions once we are done animating
 		//If we hit a level start up the game at that level

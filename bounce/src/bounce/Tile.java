@@ -165,11 +165,11 @@ class Tile extends Entity {
             }
         }
         if (direction==0){//There is a tile above us
-            if(tileY==0){
+            if(tileY==0){//Make sure we aren't at an edge
                 return true;
             }
 
-            if(level[tileX][tileY-1][0]!=null) {
+            if(level[tileX][tileY-1][0]!=null) {//Check for tiles
                 if (level[tileX][tileY - 1][0].type == 0) {//Wall
                     return true;
                 }
@@ -182,19 +182,20 @@ class Tile extends Entity {
                     StartUpState.points = StartUpState.points + levelLoader.weaponPoints;
                     StartUpState.weapons = StartUpState.weapons + 1;
                 }
-                if (level[tileX][tileY - 1][1] != null) {
-                    if (StartUpState.weapons > 0) {
-                        StartUpState.weapons = StartUpState.weapons - 1;
-                        //Award points based on enemy kill
-                    } else {
-                        //You died
-                        game.enterState(Game.GAMEOVERSTATE);
-                    }
+            }
+            if (level[tileX][tileY - 1][1] != null) {//Check for enemies
+                if (StartUpState.weapons > 0) {
+                    StartUpState.weapons = StartUpState.weapons - 1;
+                    level[tileX][tileY-1][1]=null;
+                    //Award points based on enemy kill
+                } else {
+                    //You died
+                    game.enterState(Game.GAMEOVERSTATE);
                 }
             }
 
         }else if (direction==1){//Check for a tile to the left of us
-            if (tileX==0){
+            if (tileX==0){//Make sure we aren't at an edge
                 return true;
             }
 
@@ -210,6 +211,16 @@ class Tile extends Entity {
                     level[tileX - 1][tileY][0] = null;//Delete the treasure from the map
                     StartUpState.points = StartUpState.points + levelLoader.weaponPoints;
                     StartUpState.weapons = StartUpState.weapons + 1;
+                }
+            }
+            if (level[tileX-1][tileY][1] != null) {//Check for enemies
+                if (StartUpState.weapons > 0) {
+                    StartUpState.weapons = StartUpState.weapons - 1;
+                    level[tileX-1][tileY][1]=null;
+                    //Award points based on enemy kill
+                } else {
+                    //You died
+                    game.enterState(Game.GAMEOVERSTATE);
                 }
             }
 
@@ -231,6 +242,16 @@ class Tile extends Entity {
                 StartUpState.weapons = StartUpState.weapons + 1;
                 return false;
             }
+            if (level[tileX][tileY + 1][1] != null) {//Check for enemies
+                if (StartUpState.weapons > 0) {
+                    StartUpState.weapons = StartUpState.weapons - 1;
+                    level[tileX][tileY+1][1]=null;
+                    //Award points based on enemy kill
+                } else {
+                    //You died
+                    game.enterState(Game.GAMEOVERSTATE);
+                }
+            }
         }else if (direction==3){//Check for a tile to the right of us
 
             if (tileX==levelLoader.levelSize-1){//Check if we are at a border
@@ -248,6 +269,16 @@ class Tile extends Entity {
                 StartUpState.points = StartUpState.points + levelLoader.weaponPoints;
                 StartUpState.weapons = StartUpState.weapons + 1;
                 return false;
+            }
+            if (level[tileX+1][tileY][1] != null) {//Check for enemies
+                if (StartUpState.weapons > 0) {//Do we have any weapons?
+                    StartUpState.weapons = StartUpState.weapons - 1;//Use it
+                    level[tileX+1][tileY][1]=null;//Delete the enemy
+                    //Award points based on enemy kill
+                } else {//You don't have weapons. Tough luck
+                    //You died
+                    game.enterState(Game.GAMEOVERSTATE);
+                }
             }
         }
         return false;

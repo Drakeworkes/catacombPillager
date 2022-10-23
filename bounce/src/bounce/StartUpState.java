@@ -23,8 +23,24 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 class StartUpState extends BasicGameState {
 
+	//Trigger a new level load
 	boolean loadLevel;
-	Entity[][][] level;
+
+	//Trigger a map render
+	boolean renderlevel;
+
+	//Keep track of animation frames
+	int renderState = 0;
+
+	//How many points the player has
+	int points;
+
+	//How many weapons the player has
+	int weapons;
+
+
+
+	Tile[][][] level;
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -41,24 +57,59 @@ class StartUpState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game,
 					   Graphics g) throws SlickException {
+
+		Input input = container.getInput();
 		Game bg = (Game)game;
 
+		//Draw stats
+		g.drawString("Points: " + points, 10, 30);
+		g.drawString("Weapons: " + weapons, 10, 50);
 
+		//Load the level data in
 		if(loadLevel) {
 			loadLevel = false;
 			level = levelLoader.getLevel(0);
 			System.out.println("Level loaded");
 		}
 
+		if(renderlevel){
+			if(renderState > levelLoader.tileSize){//Have we gotten to the final animation state yet?
+				renderlevel = false;
+				renderState = 0;
+				level = Tile.updateMap(level);//Update the map arrays with the new positions of everything
+			}else{
+
+				renderState = renderState + 1;
+				Tile.updatePos(level, renderState);
+			}
+		}
+
+		//Render our scene
 		if(level != null) {
-			for (Entity[][] x : level) {//Iterate through x axis
-				for (Entity[] y : x) {//Iterate through y axis
-					for (Entity E : y) {
-						if(E!= null) {
+			for (Tile[][] x : level) {//Iterate through x axis
+				for (Tile[] y : x) {//Iterate through y axis
+					for (Tile E : y) {
+						if (E != null) {
 							E.render(g);//Go through and render everything
 						}
 					}
 				}
+			}
+		}
+
+		if(!renderlevel) {//We're double-dipping this variable to use as a keypress debounce
+			if (input.isKeyDown(Input.KEY_W ) && !Tile.checkTileCollision(level, 0)) {//Check if we want to move up
+				Tile.movePlayer(level, 0);
+				renderlevel = true;
+			} else if (input.isKeyDown(Input.KEY_A) && !Tile.checkTileCollision(level, 1)) {//Check if we want to move left
+				Tile.movePlayer(level, 1);
+				renderlevel = true;
+			} else if (input.isKeyDown(Input.KEY_S) && !Tile.checkTileCollision(level, 2)) {//check if we want to move right
+				Tile.movePlayer(level, 2);
+				renderlevel = true;
+			} else if (input.isKeyDown(Input.KEY_D) && !Tile.checkTileCollision(level, 3)) {//Check if we want to move down
+				Tile.movePlayer(level, 3);
+				renderlevel = true;
 			}
 		}
 

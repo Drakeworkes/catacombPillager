@@ -7,12 +7,21 @@ import jig.ResourceManager;
 class Enemy extends Entity {
 
     public int type;
+    public int desiredX;//X coordinate we want to move to
+    public int desiredY;//Y coordinate we want to move to
+    public int state;
 
 
     public Enemy(final int x, final int y, final int EnemyType) {
         super(x, y);
         this.type = EnemyType;
+        this.desiredX = x;
+        this.desiredY = y;
         //0 - Standard tile
+        this.state = 2;
+        //0 = tile
+        //1 = player
+        //2 = enemy
 
         //Set tile art
         if(type==0) {

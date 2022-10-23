@@ -4,8 +4,9 @@ import jig.Entity;
 
 public class levelLoader {
 
-    static int levelSize = 15;
-    static int tileSize = 40;
+    static int levelSize = 15;//How many tiles are these
+    static int tileSize = 40;//How wide are the tiles
+    static int infoSize = 200;//How large is our side information panel? (Remove this much room from the X axis)
     //Initialize levelData
 
     static ArrayList<int[][]> levelData = new ArrayList<int[][]>();
@@ -58,7 +59,7 @@ public class levelLoader {
                 {0, 0, 0, 9 }, {0, 0, 1, 9 }, {0, 0, 2, 9 }, {0, 0, 3, 9 }, {0, 0, 4, 9 }, {0, 0, 5, 9 }, {0, 0, 6, 9 },                               {0, 2, 9, 9 }, {0, 0, 10, 9 }, {0, 0, 11, 9 }, {1, 0, 12, 9 },
                 {0, 0, 0, 10}, {0, 0, 1, 10}, {0, 0, 2, 10}, {0, 0, 3, 10}, {0, 1, 4, 10}, {0, 0, 5, 10}, {0, 0, 6, 10},                {0, 0, 8, 10}, {0, 0, 9, 10}, {0, 0, 10, 10}, {0, 0, 11, 10}, {0, 0, 12, 10}, {0, 0, 13, 10},
                 {0, 0, 0, 11}, {0, 0, 1, 11}, {0, 0, 2, 11}, {0, 0, 3, 11},                {1, 0, 5, 11}, {0, 0, 6, 11},                {0, 0, 8, 11}, {0, 0, 9, 11}, {0, 0, 10, 11}, {0, 2, 11, 11},
-                {0, 0, 0, 12}, {0, 0, 1, 12}, {0, 0, 2, 12}, {0, 0, 3, 12},                {0, 0, 5, 12}, {0, 0, 6, 12},                {0, 0, 8, 12}, {0, 0, 9, 12}, {0, 0, 10, 12},                 {0, 0, 12, 12},                 {0, 0, 14, 12},
+                {0, 0, 0, 12}, {0, 0, 1, 12}, {0, 0, 2, 12}, {0, 0, 3, 12},                {0, 0, 5, 12}, {0, 0, 6, 12},                               {1, 0, 9, 12}, {0, 0, 10, 12},                 {0, 0, 12, 12},                 {0, 0, 14, 12},
                 {0, 0, 0, 13}, {0, 0, 1, 13}, {0, 0, 2, 13}, {0, 0, 3, 13},                {0, 0, 5, 13}, {0, 0, 6, 13},                {0, 0, 8, 13}, {0, 0, 9, 13}, {0, 0, 10, 13}, {0, 3, 11, 13},                 {0, 1, 13, 13}, {0, 0, 14, 13},
                 {0, 0, 0, 14}, {0, 0, 1, 14}, {0, 0, 2, 14}, {0, 0, 3, 14},                                              {2, 0, 7, 14}, {0, 0, 8, 14}, {0, 0, 9, 14}, {0, 0, 10, 14}, {0, 0, 11, 14}, {0, 0, 12, 14}, {0, 0, 13, 14}, {0, 0, 14, 14}
         };
@@ -68,8 +69,9 @@ public class levelLoader {
         return 0;
     }
 
-    public static Entity[][][] getLevel(int levelNum) {
-        Entity[][][] level = new Entity[levelSize][levelSize][3];
+    //getLevel takes a level number and returns a 3D array where the first array is the x, the second array is the y, and the third array holds 3 Entites
+    public static Tile[][][] getLevel(int levelNum) {
+        Tile[][][] level = new Tile[levelSize][levelSize][3];
         //levelData[x][y] = Array length 3
         //0: Tile
         //1: Item
@@ -80,27 +82,15 @@ public class levelLoader {
         //    }
         //}
 
+        //Read through the levelData for the appropriate level, create the correct entities for the level data and send the 3D array full of entities
         for (int[] tileData : levelData.get(0)){
             int x = tileData[2];
             int y = tileData[3];
             int type = tileData[1];
             int shift = tileSize;
-            if(tileData[0]==0){//tile
-                //Tiles are placed at level 0
-                level[x][y][0] = new Tile((x*shift)+shift/2, (y*shift)+shift/2, type);
 
+            level[x][y][tileData[0]]= new Tile((x*shift)+(shift/2+infoSize), (y*shift)+shift/2, type, tileData[0], x, y);
 
-            }else if(tileData[0]==1){//Enemy
-                level[x][y][1] = new Enemy((x*shift)+shift/2, (y*shift)+shift/2, type);
-                //Enemies are placed on level 1
-
-            }else if(tileData[0]==2){//Player
-                level[x][y][2] = new Player((x*shift)+shift/2, (y*shift)+shift/2);
-                //Players are placed on level 2
-
-            }else{
-                System.out.println("Invalid entity given");
-            }
         }
 
         return level;

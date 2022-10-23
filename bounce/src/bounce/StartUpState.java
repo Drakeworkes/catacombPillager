@@ -33,10 +33,10 @@ class StartUpState extends BasicGameState {
 	int renderState = 0;
 
 	//How many points the player has
-	int points;
+	static int points;
 
 	//How many weapons the player has
-	int weapons;
+	static int weapons;
 
 
 

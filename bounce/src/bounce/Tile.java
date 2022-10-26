@@ -111,6 +111,45 @@ class Tile extends Entity {
         }
     }
 
+    public static void moveEnemies(Tile[][][] level, int[][]pathing){
+        System.out.println("Moving enemies");
+        int direction = 0;
+        int bestWeight = 99;
+        for (Tile[][] x : level) {//Iterate through x axis
+            for (Tile[] y : x) {//Iterate through y axis
+                if (y[1] != null && y[1].state == 1) {
+                    direction = 0;
+                    bestWeight = 99;
+
+                    if(y[1].tileX>0){//Check up
+                        System.out.println("Enemy at ["+(y[1].tileX)+"]["+y[1].tileY+"] is not at the top edge of screen, check up");
+                        int thisWeight = pathing[y[1].tileX-1][y[1].tileY];
+                        System.out.println("Tile["+(y[1].tileX-1)+"]["+(y[1].tileY)+"] has a weight of "+thisWeight);
+                        if (thisWeight < bestWeight){
+                            System.out.println(thisWeight +" < "+bestWeight+", We're moving up");
+                            bestWeight = thisWeight;
+                            direction = 0;
+                        }
+                    }
+                    /*if(tileX<pathing.length-1){//Check down
+                        //System.out.println("tileX["+tileX+"] is less than pathing.length-1["+(pathing.length-1)+"]");
+                        pathing = getWeight(tileX+1, tileY, weight+1, pathing, level);
+                    }
+                    if(tileY>0) {//Check left
+                        //System.out.println("tileY[" + tileY + "] is not on the left edge, lets get the weights for moving left");
+                        pathing = getWeight(tileX, tileY - 1, weight + 1, pathing, level);
+                    }
+                    if(tileY<pathing.length-1) {//Check right
+                        //System.out.println("tileY[" + tileY + "] is less than pathing.length-1[" + (pathing.length - 1) + "]");
+                        pathing = getWeight(tileX, tileY + 1, weight + 1, pathing, level);
+                    }*/
+
+                    System.out.println("The enemy located at ["+y[1].tileX+"]["+y[1].tileY+"] Is moving in direction "+direction+" , with best weight of "+bestWeight);
+                }
+            }
+        }
+    }
+
     public static void updatePos(Tile[][][] level, int offset) {
 
         for (Tile[][] x : level) {//Iterate through x axis

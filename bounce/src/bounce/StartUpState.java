@@ -38,6 +38,8 @@ class StartUpState extends BasicGameState {
 	//How many weapons the player has
 	static int weapons;
 
+	static int[][] pathing = new int[levelLoader.levelSize][levelLoader.levelSize];
+
 
 
 	Tile[][][] level;
@@ -51,6 +53,7 @@ class StartUpState extends BasicGameState {
 		loadLevel = true;
 		levelLoader.loadLevels();//Load the levels
 		container.setSoundOn(false);
+
 	}
 
 
@@ -70,6 +73,7 @@ class StartUpState extends BasicGameState {
 			loadLevel = false;
 			level = levelLoader.getLevel(0);
 			System.out.println("Level loaded");
+			pathing = pathfinding.calcPaths(level);
 		}
 
 		if(renderlevel){
@@ -77,6 +81,7 @@ class StartUpState extends BasicGameState {
 				renderlevel = false;
 				renderState = 0;
 				level = Tile.updateMap(level);//Update the map arrays with the new positions of everything
+				pathing = pathfinding.calcPaths(level);
 			}else{
 
 				renderState = renderState + 1;
@@ -96,19 +101,33 @@ class StartUpState extends BasicGameState {
 				}
 			}
 		}
+		int xPos = 0;
+		int yPos = 0;
+		for(int[] x : pathing){
+			yPos = 0;
+			for(int y : x){
+				g.drawString(""+y, (yPos*40)+200, (xPos * 40));
+				yPos = yPos + 1;
+			}
+			xPos = xPos + 1;
+		}
 
 		if(!renderlevel) {//We're double-dipping this variable to use as a keypress debounce
 			if (input.isKeyDown(Input.KEY_W ) && !Tile.checkTileCollision(level, 0, game)) {//Check if we want to move up
 				Tile.movePlayer(level, 0);
+				Tile.moveEnemies(level, pathing);
 				renderlevel = true;
 			} else if (input.isKeyDown(Input.KEY_A) && !Tile.checkTileCollision(level, 1, game)) {//Check if we want to move left
 				Tile.movePlayer(level, 1);
+				Tile.moveEnemies(level, pathing);
 				renderlevel = true;
 			} else if (input.isKeyDown(Input.KEY_S) && !Tile.checkTileCollision(level, 2, game)) {//check if we want to move right
 				Tile.movePlayer(level, 2);
+				Tile.moveEnemies(level, pathing);
 				renderlevel = true;
 			} else if (input.isKeyDown(Input.KEY_D) && !Tile.checkTileCollision(level, 3, game)) {//Check if we want to move down
 				Tile.movePlayer(level, 3);
+				Tile.moveEnemies(level, pathing);
 				renderlevel = true;
 			}
 		}

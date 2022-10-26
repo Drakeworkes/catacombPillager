@@ -27,7 +27,7 @@ class StartUpState extends BasicGameState {
 	boolean loadLevel;
 
 	//Trigger a map render
-	boolean renderlevel;
+	int renderlevel;
 
 	//Keep track of animation frames
 	int renderState = 0;
@@ -76,13 +76,18 @@ class StartUpState extends BasicGameState {
 			pathing = pathfinding.calcPaths(level);
 		}
 
-		if(renderlevel){
-			if(renderState > levelLoader.tileSize){//Have we gotten to the final animation state yet?
-				renderlevel = false;
+		if(renderlevel!=0){
+			if(renderlevel == 2 && renderState > levelLoader.tileSize){//Have we gotten to the final animation state yet?
+				renderlevel = 0;
 				renderState = 0;
 				level = Tile.updateMap(level);//Update the map arrays with the new positions of everything
 				pathing = pathfinding.calcPaths(level);
 				Tile.checkTileCollision(level, 4, game);
+			}else if(renderlevel == 1 && renderState > levelLoader.tileSize) {//Have we finished animating the player yet?
+				renderlevel = 2;
+				renderState = 0;
+				level = Tile.updateMap(level);//Update the map arrays with the new positions of everything
+				Tile.moveEnemies(level, pathing);
 			}else{
 
 				renderState = renderState + 1;
@@ -113,23 +118,19 @@ class StartUpState extends BasicGameState {
 			xPos = xPos + 1;
 		}
 
-		if(!renderlevel) {//We're double-dipping this variable to use as a keypress debounce
+		if(renderlevel==0) {//We're double-dipping this variable to use as a keypress debounce
 			if (input.isKeyDown(Input.KEY_W ) && !Tile.checkTileCollision(level, 0, game)) {//Check if we want to move up
 				Tile.movePlayer(level, 0);
-				Tile.moveEnemies(level, pathing);
-				renderlevel = true;
+				renderlevel = 1;
 			} else if (input.isKeyDown(Input.KEY_A) && !Tile.checkTileCollision(level, 1, game)) {//Check if we want to move left
 				Tile.movePlayer(level, 1);
-				Tile.moveEnemies(level, pathing);
-				renderlevel = true;
+				renderlevel = 1;
 			} else if (input.isKeyDown(Input.KEY_S) && !Tile.checkTileCollision(level, 2, game)) {//check if we want to move right
 				Tile.movePlayer(level, 2);
-				Tile.moveEnemies(level, pathing);
-				renderlevel = true;
+				renderlevel = 1;
 			} else if (input.isKeyDown(Input.KEY_D) && !Tile.checkTileCollision(level, 3, game)) {//Check if we want to move down
 				Tile.movePlayer(level, 3);
-				Tile.moveEnemies(level, pathing);
-				renderlevel = true;
+				renderlevel = 1;
 			}
 		}
 		//Check if we need to animate

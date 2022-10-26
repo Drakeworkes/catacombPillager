@@ -124,6 +124,23 @@ class Tile extends Entity {
         int bestWeight = 99;
         for (Tile[][] x : level) {//Iterate through x axis
             for (Tile[] y : x) {//Iterate through y axis
+                if (y[1] != null && y[1].state == 1 && !y[1].active){
+                    //Lets check if we should wake him up
+                    //Check up
+                    //Check down
+                    //Check left
+                    if(level[y[1].tileX-2][y[1].tileY][2] != null){//There is a player to our left
+                        System.out.println("ENEMY AWOKE DUE TO PLAYER LEFT");
+                        y[1].active = true;
+                    }
+                    //Check right
+                    //Check upLeft
+                    //check upRight
+                    //Check downLeft
+                    //Check downRight
+
+
+                }
                 if (y[1] != null && y[1].state == 1 && y[1].active) {
                     direction = 0;
                     bestWeight = 99;

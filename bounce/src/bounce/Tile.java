@@ -21,6 +21,7 @@ class Tile extends Entity {
     public int x;
     public int y;
     public int state;
+    boolean active;
 
 
     public Tile(final int x, final int y, final int tileType, int tileState, int tileX, int tileY) {
@@ -42,6 +43,7 @@ class Tile extends Entity {
         //3 - Exit
         this.desiredX = tileX;
         this.desiredY = tileY;
+        this.active = true;
 
         //Set tile art
         if (state == 0) {
@@ -66,10 +68,15 @@ class Tile extends Entity {
             }
         } else if (state == 1) {
             //This is an enemy
-            if (type == 0) {//Set the art
+            if (type == 0) {//Sleeper
+                this.active=false;
                 addImageWithBoundingBox(ResourceManager
-                        .getImage(Game.ENEMY_STANDARD_RSC));
-            } else {
+                        .getImage(Game.ENEMY_SLEEP_RSC));
+            }else if(type == 1){//Chaser
+                this.active = true;
+                addImageWithBoundingBox(ResourceManager
+                        .getImage(Game.ENEMY_AWAKE_RSC));
+            }else {
                 System.out.println("Invalid type entered, defaulting to type 0");
                 type = 0;
                 addImageWithBoundingBox(ResourceManager
@@ -83,6 +90,14 @@ class Tile extends Entity {
         } else {
             System.out.println("Wrong tile state entered");
         }
+    }
+
+    public void updateImg(){
+         if (this.active){
+             removeImage(ResourceManager.getImage(Game.ENEMY_SLEEP_RSC));
+             addImageWithBoundingBox(ResourceManager
+                     .getImage(Game.ENEMY_AWAKE_RSC));
+         }
     }
 
 
@@ -117,7 +132,44 @@ class Tile extends Entity {
         int bestWeight = 99;
         for (Tile[][] x : level) {//Iterate through x axis
             for (Tile[] y : x) {//Iterate through y axis
-                if (y[1] != null && y[1].state == 1) {
+                if (y[1] != null && y[1].state == 1 && !y[1].active){
+                    //Lets check if we should wake him up
+                    //Check up
+                    if(y[1].tileY>1 && level[y[1].tileX][y[1].tileY-2][2] != null && level[y[1].tileX][y[1].tileY-1][0]==null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check down
+                    if(y[1].tileY<(pathing.length-2) && level[y[1].tileX][y[1].tileY+2][2] != null && level[y[1].tileX][y[1].tileY+1][0]==null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check left
+                    if(y[1].tileX>1 && level[y[1].tileX-2][y[1].tileY][2] != null && level[y[1].tileX-1][y[1].tileY][0]==null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check right
+                    if(y[1].tileX<(pathing.length-2) && level[y[1].tileX+2][y[1].tileY][2] != null && level[y[1].tileX+1][y[1].tileY][0]==null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate up
+                    if(y[1].tileY>0 && level[y[1].tileX][y[1].tileY-1][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate down
+                    if(y[1].tileY<(pathing.length-1) && level[y[1].tileX][y[1].tileY+1][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate left
+                    if(y[1].tileX>0 && level[y[1].tileX-1][y[1].tileY][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate right
+                    if(y[1].tileX<(pathing.length-1) && level[y[1].tileX+1][y[1].tileY][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    y[1].updateImg();
+
+                }
+                if (y[1] != null && y[1].state == 1 && y[1].active) {
                     direction = 0;
                     bestWeight = 99;
 
@@ -248,6 +300,7 @@ class Tile extends Entity {
         //A = 1
         //S = 2
         //D = 3
+        //Same tile = 4
         int tileX = 0;
         int tileY = 0;
 
@@ -282,7 +335,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {
                     StartUpState.weapons = StartUpState.weapons - 1;
                     level[tileX][tileY-1][1]=null;
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);
@@ -312,7 +365,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {
                     StartUpState.weapons = StartUpState.weapons - 1;
                     level[tileX-1][tileY][1]=null;
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);
@@ -341,7 +394,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {
                     StartUpState.weapons = StartUpState.weapons - 1;
                     level[tileX][tileY+1][1]=null;
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);
@@ -369,7 +422,20 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {//Do we have any weapons?
                     StartUpState.weapons = StartUpState.weapons - 1;//Use it
                     level[tileX+1][tileY][1]=null;//Delete the enemy
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
+                } else {//You don't have weapons. Tough luck
+                    //You died
+                    game.enterState(Game.GAMEOVERSTATE);
+                }
+            }
+        }else if (direction==4){//Check for a tile to the right of us
+
+
+            if (level[tileX][tileY][1] != null) {//Check for enemies
+                if (StartUpState.weapons > 0) {//Do we have any weapons?
+                    StartUpState.weapons = StartUpState.weapons - 1;//Use it
+                    level[tileX][tileY][1]=null;//Delete the enemy
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {//You don't have weapons. Tough luck
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);

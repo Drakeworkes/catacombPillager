@@ -111,6 +111,75 @@ class Tile extends Entity {
         }
     }
 
+    public static void moveEnemies(Tile[][][] level, int[][]pathing){
+        System.out.println("Moving enemies");
+        int direction = 0;
+        int bestWeight = 99;
+        for (Tile[][] x : level) {//Iterate through x axis
+            for (Tile[] y : x) {//Iterate through y axis
+                if (y[1] != null && y[1].state == 1) {
+                    direction = 0;
+                    bestWeight = 99;
+
+                    if(y[1].tileY>0){//Check up
+                        System.out.println("Enemy at ["+(y[1].tileX)+"]["+y[1].tileY+"] is not at the top edge of screen, check up");
+                        int thisWeight = pathing[y[1].tileY-1][y[1].tileX];
+                        System.out.println("Tile["+(y[1].tileX)+"]["+(y[1].tileY-1)+"] has a weight of "+thisWeight);
+                        if (thisWeight < bestWeight){
+                            System.out.println(thisWeight +" < "+bestWeight+", We're moving up");
+                            bestWeight = thisWeight;
+                            direction = 0;
+                        }
+                    }
+                    if(y[1].tileY<(pathing.length-1)){//Check down
+                        System.out.println("Enemy at ["+(y[1].tileX)+"]["+y[1].tileY+"] is not at the bottom edge of screen, check down");
+                        int thisWeight = pathing[y[1].tileY+1][y[1].tileX];
+                        System.out.println("Tile["+(y[1].tileX)+"]["+(y[1].tileY+1)+"] has a weight of "+thisWeight);
+                        if (thisWeight < bestWeight){
+                            System.out.println(thisWeight +" < "+bestWeight+", We're moving down");
+                            bestWeight = thisWeight;
+                            direction = 2;
+                        }
+                    }
+                    if(y[1].tileX>0){//Check Left
+                        System.out.println("Enemy at ["+(y[1].tileX)+"]["+y[1].tileY+"] is not at the left edge of screen, check left");
+                        int thisWeight = pathing[y[1].tileY][y[1].tileX-1];
+                        System.out.println("Tile["+(y[1].tileX-1)+"]["+(y[1].tileY)+"] has a weight of "+thisWeight);
+                        if (thisWeight < bestWeight){
+                            System.out.println(thisWeight +" < "+bestWeight+", We're moving left");
+                            bestWeight = thisWeight;
+                            direction = 1;
+                        }
+                    }
+                    if(y[1].tileX<(pathing.length-1)){//Check Right
+                        System.out.println("Enemy at ["+(y[1].tileX)+"]["+y[1].tileY+"] is not at the left edge of screen, check right");
+                        int thisWeight = pathing[y[1].tileY][y[1].tileX+1];
+                        System.out.println("Tile["+(y[1].tileX+1)+"]["+(y[1].tileY)+"] has a weight of "+thisWeight);
+                        if (thisWeight < bestWeight){
+                            System.out.println(thisWeight +" < "+bestWeight+", We're moving right");
+                            bestWeight = thisWeight;
+                            direction = 3;
+                        }
+                    }
+
+                    if (direction == 0) {//Move up
+                        y[1].desiredY = y[1].tileY - 1;
+                    } else if (direction == 1) {//Move left
+                        y[1].desiredX = y[1].tileX - 1;
+                    } else if (direction == 2) {//Move down
+                        y[1].desiredY = y[1].tileY + 1;
+                    } else if (direction == 3) {//Move right
+                        y[1].desiredX = y[1].tileX + 1;
+                    } else {
+                        System.out.print("moveEnemy: Invalid direction given");
+                    }
+
+                    System.out.println("The enemy located at ["+y[1].tileX+"]["+y[1].tileY+"] Is moving in direction "+direction+" , with best weight of "+bestWeight);
+                }
+            }
+        }
+    }
+
     public static void updatePos(Tile[][][] level, int offset) {
 
         for (Tile[][] x : level) {//Iterate through x axis
@@ -140,6 +209,32 @@ class Tile extends Entity {
                         y[2].y = ((y[2].tileY * levelLoader.tileSize) + levelLoader.tileSize / 2);
                     }
                     y[2].update(y[2].x, y[2].y);
+
+                }else if (y[1] != null) {//Are there entities here?
+                    if (y[1].tileX != y[1].desiredX) {
+                        if (y[1].tileX > y[1].desiredX) {//Move left
+                            y[1].x = ((y[1].tileX * levelLoader.tileSize) + (levelLoader.tileSize / 2 + levelLoader.infoSize)) - offset;
+                        } else {//Move right
+                            y[1].x = ((y[1].tileX * levelLoader.tileSize) + (levelLoader.tileSize / 2 + levelLoader.infoSize)) + offset;
+                        }
+                    } else if (y[1].tileY != y[1].desiredY) {
+                        if (y[1].tileY > y[1].desiredY) {//Move down
+                            y[1].y = ((y[1].tileY * levelLoader.tileSize) + levelLoader.tileSize / 2) - offset;
+                        } else {//Move up
+                            y[1].y = ((y[1].tileY * levelLoader.tileSize) + levelLoader.tileSize / 2) + offset;
+                        }
+                    }
+                    //Snap to grid locations
+                    if (offset == (levelLoader.tileSize+1)) {
+                        y[1].prevTileX = y[1].tileX;//Save what tile we were at
+                        y[1].prevTileY = y[1].tileY;//Save what tile we were at
+
+                        y[1].tileX = y[1].desiredX;
+                        y[1].tileY = y[1].desiredY;
+                        y[1].x = ((y[1].tileX * levelLoader.tileSize) + (levelLoader.tileSize / 2 + levelLoader.infoSize));
+                        y[1].y = ((y[1].tileY * levelLoader.tileSize) + levelLoader.tileSize / 2);
+                    }
+                    y[1].update(y[1].x, y[1].y);
 
                 }
             }

@@ -20,6 +20,8 @@ public class Game extends StateBasedGame {
 	public static final String TILE_STANDARD_RSC = "bounce/resource/regTile.png";
 	public static final String EXIT_STANDARD_RSC = "bounce/resource/exitTile.png";
 	public static final String ENEMY_STANDARD_RSC = "bounce/resource/enemy.png";
+	public static final String ENEMY_SLEEP_RSC = "bounce/resource/enemySleep.png";
+	public static final String ENEMY_AWAKE_RSC = "bounce/resource/enemyAwake.png";
 	public static final String WEAPON_STANDARD_RSC = "bounce/resource/weapon.png";
 	public static final String PLAYER_STANDARD_RSC = "bounce/resource/player.png";
 	public static final String TREASURE_STANDARD_RSC = "bounce/resource/treasure.png";
@@ -69,6 +71,8 @@ public class Game extends StateBasedGame {
 		ResourceManager.loadImage(TILE_STANDARD_RSC);
 		ResourceManager.loadImage(EXIT_STANDARD_RSC);
 		ResourceManager.loadImage(ENEMY_STANDARD_RSC);
+		ResourceManager.loadImage(ENEMY_SLEEP_RSC);
+		ResourceManager.loadImage(ENEMY_AWAKE_RSC);
 		ResourceManager.loadImage(PLAYER_STANDARD_RSC);
 		ResourceManager.loadImage(WEAPON_STANDARD_RSC);
 		ResourceManager.loadImage(TREASURE_STANDARD_RSC);

@@ -13,8 +13,11 @@ public class levelLoader {
 
     //Points you get for collecting treasure
     static int weaponPoints = 10;
-    //Initialize levelData
 
+    static int killPoints = 50;
+
+
+    //Initialize levelData
     static ArrayList<int[][]> levelData = new ArrayList<int[][]>();
 
     public static int loadLevels(){

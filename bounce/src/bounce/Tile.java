@@ -71,11 +71,11 @@ class Tile extends Entity {
             if (type == 0) {//Sleeper
                 this.active=false;
                 addImageWithBoundingBox(ResourceManager
-                        .getImage(Game.ENEMY_STANDARD_RSC));
+                        .getImage(Game.ENEMY_SLEEP_RSC));
             }else if(type == 1){//Chaser
                 this.active = true;
                 addImageWithBoundingBox(ResourceManager
-                        .getImage(Game.ENEMY_STANDARD_RSC));
+                        .getImage(Game.ENEMY_AWAKE_RSC));
             }else {
                 System.out.println("Invalid type entered, defaulting to type 0");
                 type = 0;
@@ -90,6 +90,14 @@ class Tile extends Entity {
         } else {
             System.out.println("Wrong tile state entered");
         }
+    }
+
+    public void updateImg(){
+         if (this.active){
+             removeImage(ResourceManager.getImage(Game.ENEMY_SLEEP_RSC));
+             addImageWithBoundingBox(ResourceManager
+                     .getImage(Game.ENEMY_AWAKE_RSC));
+         }
     }
 
 
@@ -127,18 +135,38 @@ class Tile extends Entity {
                 if (y[1] != null && y[1].state == 1 && !y[1].active){
                     //Lets check if we should wake him up
                     //Check up
+                    if(y[1].tileY>1 && level[y[1].tileX][y[1].tileY-2][2] != null && level[y[1].tileX][y[1].tileY-1][0]==null){//There is a player to our left
+                        y[1].active = true;
+                    }
                     //Check down
+                    if(y[1].tileY<(pathing.length-2) && level[y[1].tileX][y[1].tileY+2][2] != null && level[y[1].tileX][y[1].tileY+1][0]==null){//There is a player to our left
+                        y[1].active = true;
+                    }
                     //Check left
-                    if(level[y[1].tileX-2][y[1].tileY][2] != null){//There is a player to our left
-                        System.out.println("ENEMY AWOKE DUE TO PLAYER LEFT");
+                    if(y[1].tileX>1 && level[y[1].tileX-2][y[1].tileY][2] != null && level[y[1].tileX-1][y[1].tileY][0]==null){//There is a player to our left
                         y[1].active = true;
                     }
                     //Check right
-                    //Check upLeft
-                    //check upRight
-                    //Check downLeft
-                    //Check downRight
-
+                    if(y[1].tileX<(pathing.length-2) && level[y[1].tileX+2][y[1].tileY][2] != null && level[y[1].tileX+1][y[1].tileY][0]==null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate up
+                    if(y[1].tileY>0 && level[y[1].tileX][y[1].tileY-1][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate down
+                    if(y[1].tileY<(pathing.length-1) && level[y[1].tileX][y[1].tileY+1][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate left
+                    if(y[1].tileX>0 && level[y[1].tileX-1][y[1].tileY][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    //Check immediate right
+                    if(y[1].tileX<(pathing.length-1) && level[y[1].tileX+1][y[1].tileY][2] != null){//There is a player to our left
+                        y[1].active = true;
+                    }
+                    y[1].updateImg();
 
                 }
                 if (y[1] != null && y[1].state == 1 && y[1].active) {
@@ -307,7 +335,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {
                     StartUpState.weapons = StartUpState.weapons - 1;
                     level[tileX][tileY-1][1]=null;
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);
@@ -337,7 +365,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {
                     StartUpState.weapons = StartUpState.weapons - 1;
                     level[tileX-1][tileY][1]=null;
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);
@@ -366,7 +394,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {
                     StartUpState.weapons = StartUpState.weapons - 1;
                     level[tileX][tileY+1][1]=null;
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);
@@ -394,7 +422,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {//Do we have any weapons?
                     StartUpState.weapons = StartUpState.weapons - 1;//Use it
                     level[tileX+1][tileY][1]=null;//Delete the enemy
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {//You don't have weapons. Tough luck
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);
@@ -407,7 +435,7 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {//Do we have any weapons?
                     StartUpState.weapons = StartUpState.weapons - 1;//Use it
                     level[tileX][tileY][1]=null;//Delete the enemy
-                    //Award points based on enemy kill
+                    StartUpState.points = StartUpState.points + levelLoader.killPoints;
                 } else {//You don't have weapons. Tough luck
                     //You died
                     game.enterState(Game.GAMEOVERSTATE);

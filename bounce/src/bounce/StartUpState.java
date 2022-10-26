@@ -82,6 +82,7 @@ class StartUpState extends BasicGameState {
 				renderState = 0;
 				level = Tile.updateMap(level);//Update the map arrays with the new positions of everything
 				pathing = pathfinding.calcPaths(level);
+				Tile.checkTileCollision(level, 4, game);
 			}else{
 
 				renderState = renderState + 1;

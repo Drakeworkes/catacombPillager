@@ -21,6 +21,7 @@ class Tile extends Entity {
     public int x;
     public int y;
     public int state;
+    boolean active;
 
 
     public Tile(final int x, final int y, final int tileType, int tileState, int tileX, int tileY) {
@@ -42,6 +43,7 @@ class Tile extends Entity {
         //3 - Exit
         this.desiredX = tileX;
         this.desiredY = tileY;
+        this.active = true;
 
         //Set tile art
         if (state == 0) {
@@ -66,10 +68,15 @@ class Tile extends Entity {
             }
         } else if (state == 1) {
             //This is an enemy
-            if (type == 0) {//Set the art
+            if (type == 0) {//Sleeper
+                this.active=false;
                 addImageWithBoundingBox(ResourceManager
                         .getImage(Game.ENEMY_STANDARD_RSC));
-            } else {
+            }else if(type == 1){//Chaser
+                this.active = true;
+                addImageWithBoundingBox(ResourceManager
+                        .getImage(Game.ENEMY_STANDARD_RSC));
+            }else {
                 System.out.println("Invalid type entered, defaulting to type 0");
                 type = 0;
                 addImageWithBoundingBox(ResourceManager
@@ -117,7 +124,7 @@ class Tile extends Entity {
         int bestWeight = 99;
         for (Tile[][] x : level) {//Iterate through x axis
             for (Tile[] y : x) {//Iterate through y axis
-                if (y[1] != null && y[1].state == 1) {
+                if (y[1] != null && y[1].state == 1 && y[1].active) {
                     direction = 0;
                     bestWeight = 99;
 
@@ -248,6 +255,7 @@ class Tile extends Entity {
         //A = 1
         //S = 2
         //D = 3
+        //Same tile = 4
         int tileX = 0;
         int tileY = 0;
 
@@ -369,6 +377,19 @@ class Tile extends Entity {
                 if (StartUpState.weapons > 0) {//Do we have any weapons?
                     StartUpState.weapons = StartUpState.weapons - 1;//Use it
                     level[tileX+1][tileY][1]=null;//Delete the enemy
+                    //Award points based on enemy kill
+                } else {//You don't have weapons. Tough luck
+                    //You died
+                    game.enterState(Game.GAMEOVERSTATE);
+                }
+            }
+        }else if (direction==4){//Check for a tile to the right of us
+
+
+            if (level[tileX][tileY][1] != null) {//Check for enemies
+                if (StartUpState.weapons > 0) {//Do we have any weapons?
+                    StartUpState.weapons = StartUpState.weapons - 1;//Use it
+                    level[tileX][tileY][1]=null;//Delete the enemy
                     //Award points based on enemy kill
                 } else {//You don't have weapons. Tough luck
                     //You died

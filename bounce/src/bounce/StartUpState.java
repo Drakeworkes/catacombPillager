@@ -32,6 +32,9 @@ class StartUpState extends BasicGameState {
 	//Keep track of animation frames
 	int renderState = 0;
 
+	//Prints numbers showing the pathfinding map
+	boolean pathDebug = false;
+
 	//How many points the player has
 	static int points;
 
@@ -107,15 +110,18 @@ class StartUpState extends BasicGameState {
 				}
 			}
 		}
-		int xPos = 0;
-		int yPos = 0;
-		for(int[] x : pathing){
-			yPos = 0;
-			for(int y : x){
-				g.drawString(""+y, (yPos*40)+200, (xPos * 40));
-				yPos = yPos + 1;
+
+		if (pathDebug) {
+			int xPos = 0;
+			int yPos = 0;
+			for (int[] x : pathing) {
+				yPos = 0;
+				for (int y : x) {
+					g.drawString("" + y, (yPos * 40) + 200, (xPos * 40));
+					yPos = yPos + 1;
+				}
+				xPos = xPos + 1;
 			}
-			xPos = xPos + 1;
 		}
 
 		if(renderlevel==0) {//We're double-dipping this variable to use as a keypress debounce
